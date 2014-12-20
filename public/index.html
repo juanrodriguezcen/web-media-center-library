@@ -19,37 +19,9 @@
 
 
 </head>
-<body ng-controller="FilesController as filesCtrl">
+<body>
     <h1>Raspi</h1>
-    <h4 style="margin-left: 8px; margin-top: 15px"> {{ filesCtrl.currentDir }}</h4>
-    <button type="button" class="btn btn-info" style="padding-right: 15px; margin-bottom: 15px" ng-show="filesCtrl.parentDir != '///'" ng-click="filesCtrl.getFilesAndDirs(filesCtrl.parentDir)">
-        <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span> Parent
-    </button> 
-
-    <ul class="list-group files-explorer">
-        <li class="list-group-item" ng-repeat="item in filesCtrl.filesOrDirs" ng-click="item.is_dir ? filesCtrl.getFilesAndDirs(item.url) : filesCtrl.confirmTouchFile(item)" ng-class="item.has_subs ? 'has-subs' : ''">
-            <span class="glyphicon glyphicon-folder-open" aria-hidden="true" ng-show="item.is_dir" style="margin-right: 5px"></span>
-            {{ item.name }}
-        </li>
-    </ul>
-
-    <div id="myModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">Confirm</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Do you want to "touch" {{ filesCtrl.itemToConfirm.name }}?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" ng-click="filesCtrl.touchFile()">Yes</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+    <div ng-view></div>
 
 
 </body>

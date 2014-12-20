@@ -5,15 +5,20 @@
     var baseFilesApiUrl = '/api/files';
     var baseTouchApiUrl = '/api/touch';
 
-    controllers.controller("FilesController", ['$http', function ($http) {
+    controllers.controller("FilesController", ['$http', '$routeParams', '$location', function ($http, $routeParams, $location) {
         var ctrl = this;
         ctrl.filesOrDirs = [];
         ctrl.currentDir = '';
         ctrl.parentDir = '///';
         ctrl.itemToConfirm = '';
+        
     
-        ctrl.getFilesAndDirs = function (folderUrl) {
-            $http.get(baseFilesApiUrl + folderUrl).
+        ctrl.load = function() {
+            if($routeParams.path){
+                ctrl.currentDir = '/' + $routeParams.path;
+            }
+        
+            $http.get(baseFilesApiUrl + ctrl.currentDir).
                 success(function(data, status, headers, config) {
                     ctrl.filesOrDirs = data.sort(function (a, b) {
                         if (a.is_dir && !b.is_dir) {
@@ -27,29 +32,24 @@
                         }
                     });
 
-                    if (folderUrl != '') {
-                        ctrl.parentDir = folderUrl.replace(/\/[^\/]+$/, "");
+                    if (ctrl.currentDir != '') {
+                        ctrl.parentDir = ctrl.currentDir.replace(/\/[^\/]+$/, "");
                     } else {
                         ctrl.parentDir = '///';
                     }
-                    
-                    if(folderUrl == ''){
-                        ctrl.currentDir = '/';
-                    }else{
-                        ctrl.currentDir = folderUrl;
-                    }
+
                 }).
                 error(function(data, status, headers, config) {
                   // log error
                 });
         }
-
-        ctrl.openDir = function (item) {
-            if (item.is_dir) {
-                getFilesAndDirs(item.url);
-
-            }
+        
+        ctrl.goToFolder = function(folder){
+            $location.path('/library' + folder);
         }
+        
+
+
 
         ctrl.confirmTouchFile = function (item){
             ctrl.itemToConfirm = item;
@@ -63,7 +63,7 @@
                 });
         }
         
-        ctrl.getFilesAndDirs('');
+        ctrl.load();
 
     }]);
 
