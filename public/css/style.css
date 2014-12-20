@@ -1,0 +1,18 @@
+body{
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+}
+
+
+.directory-item{
+    background-color: red;
+}
+
+.file-item{
+    background-color: green;
+}
+
+.has-subs{
+    background-color: #cdeec6;
+}
