@@ -3,6 +3,21 @@ var fs = require('fs');
 var path = require("path");
 var express = require('express');
 var router = express.Router();
+var tmdbgateway = require('../lib/tmdbGateway.js');
+var filenameParser = require('../lib/filenameParser.js');
+
+router.get('/movie-info', function (req, res) {
+    var movieParsedName = filenameParser.parseMovieFileName(req.query.filename);
+    if(movieParsedName){
+        tmdbgateway.getMovieInfo(config.tmdb_api_key, movieParsedName.title, movieParsedName.year, function(error, movie_info){
+            if(error){
+                return res.json('');
+            }else{
+                return res.json(movie_info);
+            }
+        }); 
+    }    
+})
 
 //"touch" a file by renaming it so the minidlna server notices a file change and adds the video file and it's subtitle (if any) to its library
 router.post('/touch/:file(*)', function (req, res) {
