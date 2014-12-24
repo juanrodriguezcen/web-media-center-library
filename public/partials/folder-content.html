@@ -4,9 +4,9 @@
 </button> 
 
 <ul class="list-group files-explorer">
-    <li class="list-group-item" ng-repeat="item in filesCtrl.filesOrDirs" ng-click="item.is_dir ? filesCtrl.goToFolder(item.url) : filesCtrl.confirmTouchFile(item)" ng-class="item.has_subs ? 'has-subs' : ''">
+    <li class="list-group-item" ng-repeat="item in filesCtrl.filesOrDirs" ng-click="item.isDir ? filesCtrl.goToFolder(item.url) : filesCtrl.confirmTouchFile(item)" ng-class="item.hasSubs ? 'has-subs' : ''">
         
-        <span class="glyphicon glyphicon-folder-open" aria-hidden="true" ng-show="item.is_dir" style="margin-right: 5px"></span>
+        <span class="glyphicon glyphicon-folder-open" aria-hidden="true" ng-show="item.isDir" style="margin-right: 5px"></span>
         {{ item.name }}
         
     </li>
