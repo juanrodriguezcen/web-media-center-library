@@ -76,8 +76,16 @@ router.get('/files/:dir(*)?', function (req, res) {
             result.push({ isDir: isDir, name: file, url: folderUrl + '/' + file, hasSubs: fs.existsSync(srtFilePath) });
         }
   });
+  
+  var folderType = 'Undefined';
+    
+  if((folder + '/').indexOf(config.moviesFolderPath) == 0){
+    folderType = 'Movies';
+  }else if((folder + '/').indexOf(config.seriesFolderPath) == 0){
+    folderType = 'Series';
+  }
 
-  res.json(result);
+  res.json({ folderType: folderType, items: result });
 })
 
 module.exports = router;

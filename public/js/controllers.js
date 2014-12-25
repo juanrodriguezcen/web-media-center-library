@@ -8,6 +8,7 @@
     controllers.controller("FilesController", ['$http', '$routeParams', '$location', function ($http, $routeParams, $location) {
         var ctrl = this;
         ctrl.filesOrDirs = [];
+        ctrl.folderType = '';
         ctrl.currentDir = '';
         ctrl.parentDir = '///';
         ctrl.itemToConfirm = '';
@@ -20,7 +21,7 @@
         
             $http.get(baseFilesApiUrl + ctrl.currentDir).
                 success(function(data, status, headers, config) {
-                    ctrl.filesOrDirs = data.sort(function (a, b) {
+                    ctrl.filesOrDirs = data.items.sort(function (a, b) {
                         if (a.isDir && !b.isDir) {
                             return -1;
                         } else if (!a.isDir && b.isDir) {
@@ -31,6 +32,8 @@
                             return -1;
                         }
                     });
+                   
+                    ctrl.folderType = data.folderType;
 
                     if (ctrl.currentDir != '') {
                         ctrl.parentDir = ctrl.currentDir.replace(/\/[^\/]+$/, "");
@@ -49,8 +52,6 @@
         }
         
 
-
-
         ctrl.confirmTouchFile = function (item){
             ctrl.itemToConfirm = item;
             $('#myModal').modal('show');
@@ -67,4 +68,6 @@
 
     }]);
 
+    
+    
 })();
