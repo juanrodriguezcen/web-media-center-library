@@ -1,11 +1,8 @@
 
 (function(){
-    var controllers = angular.module('controllers', []);
+    var controllers = angular.module('controllers', ['services']);
     
-    var baseFilesApiUrl = '/api/files';
-    var baseTouchApiUrl = '/api/touch';
-
-    controllers.controller("FilesController", ['$http', '$routeParams', '$location', function ($http, $routeParams, $location) {
+    controllers.controller("FilesController", ['$http', '$routeParams', '$location', 'apiService', function ($http, $routeParams, $location, apiService) {
         var ctrl = this;
         ctrl.filesOrDirs = [];
         ctrl.folderType = '';
@@ -19,32 +16,18 @@
                 ctrl.currentDir = '/' + $routeParams.path;
             }
         
-            $http.get(baseFilesApiUrl + ctrl.currentDir).
-                success(function(data, status, headers, config) {
-                    ctrl.filesOrDirs = data.items.sort(function (a, b) {
-                        if (a.isDir && !b.isDir) {
-                            return -1;
-                        } else if (!a.isDir && b.isDir) {
-                            return 1;
-                        } else if (a.name.toLowerCase() >= b.name.toLowerCase()) {
-                            return 1;
-                        } else {
-                            return -1;
-                        }
-                    });
-                   
-                    ctrl.folderType = data.folderType;
-
+            apiService.getFolderTypeAndItems(ctrl.currentDir, function(error, result){
+                if(!error){
+                    ctrl.folderType = result.folderType;
+                    ctrl.filesOrDirs = result.items;
+                    
                     if (ctrl.currentDir != '') {
                         ctrl.parentDir = ctrl.currentDir.replace(/\/[^\/]+$/, "");
                     } else {
                         ctrl.parentDir = '///';
                     }
-
-                }).
-                error(function(data, status, headers, config) {
-                  // log error
-                });
+                }
+            });
         }
         
         ctrl.goToFolder = function(folder){
@@ -58,16 +41,11 @@
         }
 
         ctrl.touchFile = function () {
-            $http.post(baseTouchApiUrl + ctrl.itemToConfirm.url).
-                success(function (data, status, headers, config) {
-                    $('#myModal').modal('hide');
-                });
+            apiService.touchFile(ctrl.itemToConfirm.url, function(error){
+                $('#myModal').modal('hide');
+            });
         }
         
         ctrl.load();
-
     }]);
-
-    
-    
 })();
