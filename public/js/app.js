@@ -1,7 +1,7 @@
 
 
 (function(){
-    var app = angular.module("raspiDLNA", ['ngRoute', 'controllers']);
+    var app = angular.module("raspiDLNA", ['ngRoute', 'controllers', 'directives']);
     
     app.config(['$routeProvider',
       function($routeProvider) {

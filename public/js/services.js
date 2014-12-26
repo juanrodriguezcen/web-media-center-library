@@ -2,7 +2,7 @@
 (function(){
     var services = angular.module('services', []);
 
-    services.service('apiService', ['$http', function($http){
+    services.service('filesService', ['$http', function($http){
     
         var baseFilesApiUrl = '/api/files';
         var baseTouchApiUrl = '/api/touch';
@@ -40,6 +40,38 @@
                 });
         }
     
+    }]);
+    
+    services.service('movieModalService', ['$http', function($http){
+        var svc = this;
+        svc.movieFileName  = '';
+        svc.movieUrl = '';
+        svc.movieFileInfo = '';
+        
+        svc.loadMovieInfo = function(fileName, fileUrl, callback){
+            svc.movieFileName = fileName;
+            svc.movieUrl = fileUrl;
+            svc.movieFileInfo = '';
+            
+            $http.get('/api/movie-info?filename=' + fileName).
+                success(function (data, status, headers, config) {
+                    if(status == 200){
+                        svc.movieFileInfo = data;
+                    }else{
+                        svc.movieFileInfo = '';
+                    }
+                    callback();
+                }).error(function(data, status, headers, config) {
+                    callback('Error touching file on server');
+                });
+        }
+    
+    }]);
+    
+    services.service('undefinedModalService', ['$http', function($http){
+        var svc = this;
+        svc.fileName  = '';
+        svc.fileUrl = '';
     }]);
     
 })();

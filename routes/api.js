@@ -11,11 +11,19 @@ router.get('/movie-info', function (req, res) {
     if(movieParsedName){
         tmdbgateway.getMovieInfo(config.tmdbApiKey, movieParsedName.title, movieParsedName.year, function(error, movieInfo){
             if(error){
+                if(error.errorCode == tmdbgateway.errorCodes.movieNotFound){
+                    res.status(404);
+                }else{
+                    res.status(500);
+                }
                 return res.json('');
             }else{
                 return res.json(movieInfo);
             }
         }); 
+    }else{
+        res.status(404);
+        return res.json('');
     }    
 })
 

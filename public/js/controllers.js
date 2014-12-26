@@ -2,7 +2,7 @@
 (function(){
     var controllers = angular.module('controllers', ['services']);
     
-    controllers.controller("FilesController", ['$http', '$routeParams', '$location', 'apiService', function ($http, $routeParams, $location, apiService) {
+    controllers.controller("FilesController", ['$http', '$routeParams', '$location', 'filesService', 'movieModalService', 'undefinedModalService', function ($http, $routeParams, $location, filesService, movieModalService, undefinedModalService) {
         var ctrl = this;
         ctrl.filesOrDirs = [];
         ctrl.folderType = '';
@@ -16,7 +16,7 @@
                 ctrl.currentDir = '/' + $routeParams.path;
             }
         
-            apiService.getFolderTypeAndItems(ctrl.currentDir, function(error, result){
+            filesService.getFolderTypeAndItems(ctrl.currentDir, function(error, result){
                 if(!error){
                     ctrl.folderType = result.folderType;
                     ctrl.filesOrDirs = result.items;
@@ -30,20 +30,24 @@
             });
         }
         
-        ctrl.goToFolder = function(folder){
-            $location.path('/library' + folder);
+        ctrl.goToParent = function(){
+            $location.path('/library' + ctrl.parentDir);
         }
         
-
-        ctrl.confirmTouchFile = function (item){
-            ctrl.itemToConfirm = item;
-            $('#myModal').modal('show');
-        }
-
-        ctrl.touchFile = function () {
-            apiService.touchFile(ctrl.itemToConfirm.url, function(error){
-                $('#myModal').modal('hide');
-            });
+        ctrl.clickItem = function(item){
+            if(item.isDir){
+                $location.path('/library' + item.url);
+            }else{
+                if(ctrl.folderType == 'Movies'){
+                    movieModalService.loadMovieInfo(item.name, item.url, function(){
+                        $('#movie-info-modal').modal('show');    
+                    } );
+                }else{
+                    undefinedModalService.fileName = item.name;
+                    undefinedModalService.fileUrl = item.url;
+                    $('#undefined-info-modal').modal('show');  
+                }
+            }
         }
         
         ctrl.load();
