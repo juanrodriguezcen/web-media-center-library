@@ -16,3 +16,13 @@ body{
 .has-subs{
     background-color: #cdeec6;
 }
+
+.no-subs-modal{
+    color: red;
+    font-weight: bold;
+}
+
+.has-subs-modal{
+    color: green;
+    font-weight: bold;
+}

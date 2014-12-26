@@ -44,16 +44,14 @@
     
     services.service('movieModalService', ['$http', function($http){
         var svc = this;
-        svc.movieFileName  = '';
-        svc.movieUrl = '';
+        svc.item  = '';
         svc.movieFileInfo = '';
         
-        svc.loadMovieInfo = function(fileName, fileUrl, callback){
-            svc.movieFileName = fileName;
-            svc.movieUrl = fileUrl;
+        svc.loadMovieInfo = function(item, callback){
+            svc.item = item;
             svc.movieFileInfo = '';
             
-            $http.get('/api/movie-info?filename=' + fileName).
+            $http.get('/api/movie-info?filename=' + svc.item.name).
                 success(function (data, status, headers, config) {
                     if(status == 200){
                         svc.movieFileInfo = data;
@@ -70,8 +68,8 @@
     
     services.service('undefinedModalService', ['$http', function($http){
         var svc = this;
-        svc.fileName  = '';
-        svc.fileUrl = '';
+        svc.item  = '';
     }]);
+    
     
 })();

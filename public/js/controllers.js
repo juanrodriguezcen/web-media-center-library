@@ -39,12 +39,11 @@
                 $location.path('/library' + item.url);
             }else{
                 if(ctrl.folderType == 'Movies'){
-                    movieModalService.loadMovieInfo(item.name, item.url, function(){
+                    movieModalService.loadMovieInfo(item, function(){
                         $('#movie-info-modal').modal('show');    
                     } );
                 }else{
-                    undefinedModalService.fileName = item.name;
-                    undefinedModalService.fileUrl = item.url;
+                    undefinedModalService.item = item;
                     $('#undefined-info-modal').modal('show');  
                 }
             }

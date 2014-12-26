@@ -13,7 +13,7 @@
             
             ctrl.touchFile = function(){
                 $('#movie-modal-touch-button').button('loading');
-                filesService.touchFile(movieModalService.movieUrl, function(error){
+                filesService.touchFile(movieModalService.item.url, function(error){
                     $('#movie-modal-touch-button').button('reset');
                 });
             }
@@ -32,7 +32,7 @@
             
             ctrl.touchFile = function(){
                 $('#undefined-modal-touch-button').button('loading');
-                filesService.touchFile(undefinedModalService.fileUrl, function(error){
+                filesService.touchFile(undefinedModalService.item.url, function(error){
                     $('#undefined-modal-touch-button').button('reset');
                 });
             }
