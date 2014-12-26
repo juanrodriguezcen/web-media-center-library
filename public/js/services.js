@@ -24,7 +24,7 @@
                         }
                     });
 
-                    callback(null, { folderType: data.folderType, items: items});
+                    callback(null, { items: items});
                 }).
                 error(function(data, status, headers, config) {
                     callback('Error retrieving data from server');
@@ -42,33 +42,28 @@
     
     }]);
     
-    services.service('movieModalService', ['$http', function($http){
+    services.service('fileInfoModalService', ['$http', function($http){
         var svc = this;
         svc.item  = '';
-        svc.movieFileInfo = '';
+        svc.fileInfo = '';
         
-        svc.loadMovieInfo = function(item, callback){
+        svc.loadFileInfo = function(item, callback){
             svc.item = item;
-            svc.movieFileInfo = '';
+            svc.fileInfo = '';
             
-            $http.get('/api/movie-info?filename=' + svc.item.name).
+            $http.get('/api/file-info?filename=' + svc.item.name).
                 success(function (data, status, headers, config) {
                     if(status == 200){
-                        svc.movieFileInfo = data;
+                        svc.fileInfo = data;
                     }else{
-                        svc.movieFileInfo = '';
+                        svc.fileInfo = '';
                     }
                     callback();
                 }).error(function(data, status, headers, config) {
-                    callback('Error touching file on server');
+                    callback('Error getting file info from server');
                 });
         }
     
-    }]);
-    
-    services.service('undefinedModalService', ['$http', function($http){
-        var svc = this;
-        svc.item  = '';
     }]);
     
     

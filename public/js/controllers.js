@@ -2,13 +2,11 @@
 (function(){
     var controllers = angular.module('controllers', ['services']);
     
-    controllers.controller("FilesController", ['$http', '$routeParams', '$location', 'filesService', 'movieModalService', 'undefinedModalService', function ($http, $routeParams, $location, filesService, movieModalService, undefinedModalService) {
+    controllers.controller("FilesController", ['$http', '$routeParams', '$location', 'filesService', 'fileInfoModalService', function ($http, $routeParams, $location, filesService, fileInfoModalService) {
         var ctrl = this;
         ctrl.filesOrDirs = [];
-        ctrl.folderType = '';
         ctrl.currentDir = '';
         ctrl.parentDir = '///';
-        ctrl.itemToConfirm = '';
         
     
         ctrl.load = function() {
@@ -18,7 +16,6 @@
         
             filesService.getFolderTypeAndItems(ctrl.currentDir, function(error, result){
                 if(!error){
-                    ctrl.folderType = result.folderType;
                     ctrl.filesOrDirs = result.items;
                     
                     if (ctrl.currentDir != '') {
@@ -38,14 +35,19 @@
             if(item.isDir){
                 $location.path('/library' + item.url);
             }else{
-                if(ctrl.folderType == 'Movies'){
-                    movieModalService.loadMovieInfo(item, function(){
-                        $('#movie-info-modal').modal('show');    
-                    } );
-                }else{
-                    undefinedModalService.item = item;
-                    $('#undefined-info-modal').modal('show');  
-                }
+                fileInfoModalService.loadFileInfo(item, function(error){
+                    if(!error){
+                        if(fileInfoModalService.fileInfo && fileInfoModalService.fileInfo.type == 'Movie'){
+                            $('#movie-info-modal').modal('show');  
+                        }else if(fileInfoModalService.fileInfo && fileInfoModalService.fileInfo.type == 'Series'){
+                            $('#series-info-modal').modal('show');  
+                        }else{
+                            $('#undefined-info-modal').modal('show');  
+                        }
+                    }else{
+                        $('#undefined-info-modal').modal('show');  
+                    }
+                });
             }
         }
         

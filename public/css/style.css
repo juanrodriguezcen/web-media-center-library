@@ -26,3 +26,7 @@ body{
     color: green;
     font-weight: bold;
 }
+
+.series-modal-table td{
+    padding: 3px;
+}

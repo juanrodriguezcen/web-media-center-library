@@ -3,43 +3,25 @@
     var directives = angular.module('directives', ['services']);
    
     
-    directives.directive("movieModal", ['movieModalService', 'filesService', function (movieModalService, filesService) {
+    directives.directive("fileInfoModal", ['fileInfoModalService', 'filesService', function (fileInfoModalService, filesService) {
         return {
           restrict: 'E',
-          templateUrl: '/partials/movie-modal.html',
+          templateUrl: '/partials/file-info-modal.html',
           controller: function(){
             var ctrl = this; 
-            ctrl.movieInfoService = movieModalService;
+            ctrl.service = fileInfoModalService;
             
             ctrl.touchFile = function(){
-                $('#movie-modal-touch-button').button('loading');
+                $('.modal-touch-button').button('loading');
                 filesService.touchFile(movieModalService.item.url, function(error){
-                    $('#movie-modal-touch-button').button('reset');
+                    $('.modal-touch-button').button('reset');
                 });
             }
           },
-          controllerAs: "movieModalCtrl"
+          controllerAs: "fileInfoModalCtrl"
         };
     }]);
     
-    directives.directive("undefinedModal", ['undefinedModalService', 'filesService', function (undefinedModalService, filesService) {
-        return {
-          restrict: 'E',
-          templateUrl: '/partials/undefined-modal.html',
-          controller: function(){
-            var ctrl = this; 
-            ctrl.service = undefinedModalService;
-            
-            ctrl.touchFile = function(){
-                $('#undefined-modal-touch-button').button('loading');
-                filesService.touchFile(undefinedModalService.item.url, function(error){
-                    $('#undefined-modal-touch-button').button('reset');
-                });
-            }
-          },
-          controllerAs: "undefinedModalCtrl"
-        };
-    }]);
     
 })();
 

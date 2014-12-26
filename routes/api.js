@@ -6,21 +6,42 @@ var router = express.Router();
 var tmdbgateway = require('../lib/tmdbGateway.js');
 var filenameParser = require('../lib/filenameParser.js');
 
-router.get('/movie-info', function (req, res) {
-    var movieParsedName = filenameParser.parseMovieFileName(req.query.filename);
-    if(movieParsedName){
-        tmdbgateway.getMovieInfo(config.tmdbApiKey, movieParsedName.title, movieParsedName.year, function(error, movieInfo){
-            if(error){
-                if(error.errorCode == tmdbgateway.errorCodes.movieNotFound){
-                    res.status(404);
+router.get('/file-info', function (req, res) {
+    var fileNameParsed = filenameParser.parseFileName(req.query.filename);
+
+    if(fileNameParsed){
+        if(fileNameParsed.type == 'Movie'){
+            tmdbgateway.getMovieInfo(config.tmdbApiKey, fileNameParsed.title, fileNameParsed.year, function(error, movieInfo){
+                if(error){
+                    if(error.errorCode == tmdbgateway.errorCodes.notFound){
+                        res.status(404);
+                    }else{
+                        res.status(500);
+                    }
+                    return res.json('');
                 }else{
-                    res.status(500);
+                    movieInfo.type = 'Movie';
+                    return res.json(movieInfo);
                 }
-                return res.json('');
-            }else{
-                return res.json(movieInfo);
-            }
-        }); 
+            });
+        }else if(fileNameParsed.type == 'Series'){
+            tmdbgateway.getSeriesEpisodeInfo(config.tmdbApiKey, fileNameParsed.title, fileNameParsed.season, fileNameParsed.episode, function(error, episodeInfo){
+                if(error){
+                    if(error.errorCode == tmdbgateway.errorCodes.notFound){
+                        res.status(404);
+                    }else{
+                        res.status(500);
+                    }
+                    return res.json('');
+                }else{
+                    episodeInfo.type = 'Series';
+                    return res.json(episodeInfo);
+                }
+            });
+        }else{
+            res.status(404);
+            return res.json('');   
+        }
     }else{
         res.status(404);
         return res.json('');
@@ -52,7 +73,7 @@ router.post('/touch/:file(*)', function (req, res) {
 
 //Gets the media files in a particular folder relative to the base folder
 router.get('/files/:dir(*)?', function (req, res) {
- 
+  
   var folderUrl = '';
   var folder = config.baseFolderPath;
   if(req.params.dir){
@@ -84,16 +105,8 @@ router.get('/files/:dir(*)?', function (req, res) {
             result.push({ isDir: isDir, name: file, url: folderUrl + '/' + file, hasSubs: fs.existsSync(srtFilePath) });
         }
   });
-  
-  var folderType = 'Undefined';
-    
-  if((folder + '/').indexOf(config.moviesFolderPath) == 0){
-    folderType = 'Movies';
-  }else if((folder + '/').indexOf(config.seriesFolderPath) == 0){
-    folderType = 'Series';
-  }
 
-  res.json({ folderType: folderType, items: result });
+  res.json({ items: result });
 })
 
 module.exports = router;
