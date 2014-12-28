@@ -13,7 +13,7 @@
             
             ctrl.touchFile = function(){
                 $('.modal-touch-button').button('loading');
-                filesService.touchFile(movieModalService.item.url, function(error){
+                filesService.touchFile(fileInfoModalService.item.url, function(error){
                     $('.modal-touch-button').button('reset');
                 });
             }
